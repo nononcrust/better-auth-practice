@@ -46,8 +46,13 @@ export const useSignUpWithEmailMutation = () => {
 };
 
 export const useSignOutMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: () => authClient.signOut(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(sessionQueryOptions);
+    },
   });
 };
 

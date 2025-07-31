@@ -6,6 +6,7 @@ import { sessionQueryOptions, useSignOutMutation } from "@/lib/auth/hooks";
 import { DropdownMenu } from "../ui/dropdown-menu";
 import { Suspense } from "@suspensive/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { LogOutIcon, SettingsIcon } from "lucide-react";
 
 export const Header = () => {
   return (
@@ -40,14 +41,33 @@ const HeaderRight = () => {
       {session !== null && (
         <DropdownMenu>
           <DropdownMenu.Trigger className="bg-background-100 size-8 rounded-full" />
-          <DropdownMenu.Content>
+          <DropdownMenu.Content className="pt-0">
+            <div className="flex p-3 border-b border-border gap-3 pr-8 items-center">
+              <div className="size-10 rounded-full bg-background-100" />
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold">
+                  {session.user.name}
+                </span>
+                <span className="block text-[0.8125rem] text-sub">
+                  {session.user.email}
+                </span>
+              </div>
+            </div>
             <DropdownMenu.Item
-              render={<Link href="/account">계정 관리</Link>}
+              className="mt-1 disable-focus-ring"
+              render={
+                <Link href="/account">
+                  <SettingsIcon className="text-subtle" size={16} />
+                  계정 관리
+                </Link>
+              }
             />
+            <DropdownMenu.Separator />
             <DropdownMenu.Item
               onClick={() => signOutMutation.mutate()}
               disabled={signOutMutation.isPending}
             >
+              <LogOutIcon className="text-subtle" size={16} />
               로그아웃
             </DropdownMenu.Item>
           </DropdownMenu.Content>
