@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
+import { useSignUpWithEmailMutation } from "@/lib/auth/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -27,8 +27,10 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
-  const onSubmit = form.handleSubmit(async (formData) => {
-    const { error } = await authClient.signUp.email(
+  const signUpWithEmailMutation = useSignUpWithEmailMutation();
+
+  const onSubmit = form.handleSubmit((formData) => {
+    signUpWithEmailMutation.mutate(
       {
         email: formData.email,
         password: formData.password,
@@ -40,15 +42,11 @@ export default function RegisterPage() {
         },
       }
     );
-
-    if (error && error.code === authClient.$ERROR_CODES.USER_ALREADY_EXISTS) {
-      console.log("이미 가입된 이메일입니다.");
-    }
   });
 
   return (
-    <div className="px-4 md:mx-auto md:max-w-sm">
-      <main className="mt-24 w-full">
+    <div className="px-4 md:mx-auto md:max-w-sm flex justify-center items-center h-dvh">
+      <main className="w-full">
         <Form onSubmit={onSubmit}>
           <Form.Item error={!!form.formState.errors.name}>
             <Form.Label>이름</Form.Label>
